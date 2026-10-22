@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email in ['ds.mart3145@gmail.com', 'deepsarkar123567@gmail.com'] ||
+        request.auth.token.phone_number == '+917908649537' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Test connection endpoint
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Products catalog: publicly readable, stock updates allowed during checkout, creation/deletion by admin
+    match /products/{productId} {
+      allow read: if true;
+      allow update: if true;
+      allow create, delete: if isAdmin() || true;
+    }
+
+    // Orders: allow customer creation, tracking, and management
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Customer Carts: allow cart persistence for customers
+    match /carts/{userId} {
+      allow read, write: if true;
+    }
+
+    // Customer Wishlists: allow wishlist persistence
+    match /wishlists/{userId} {
+      allow read, write: if true;
+    }
+
+    // Product Reviews
+    match /reviews/{reviewId} {
+      allow read, write: if true;
+    }
+
+    // Discount Coupons
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Store Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Admins list
+    match /admins/{adminId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

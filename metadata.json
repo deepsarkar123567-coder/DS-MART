@@ -1,0 +1,6 @@
+{
+  "name": "DS SMART — Modern Online Shopping Store",
+  "description": "Modern full-stack e-commerce store and admin dashboard with catalog, cart, checkout, order tracking, and inventory management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

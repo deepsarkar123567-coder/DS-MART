@@ -1,0 +1,170 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Store item catalog record",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 300 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "category": { "type": "string", "maxLength": 100 },
+        "sku": { "type": "string", "maxLength": 100 },
+        "price": { "type": "number" },
+        "salePrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "image": { "type": "string", "maxLength": 1000 },
+        "images": { "type": "array" },
+        "isFeatured": { "type": "boolean" },
+        "isBestSeller": { "type": "boolean" },
+        "isNewArrival": { "type": "boolean" },
+        "isDemo": { "type": "boolean" }
+      },
+      "required": ["title", "category", "price", "stock"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase transaction record",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerEmail": { "type": "string", "maxLength": 200 },
+        "customerName": { "type": "string", "maxLength": 200 },
+        "customerPhone": { "type": "string", "maxLength": 30 },
+        "shippingAddress": { "type": "object" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "deliveryCharge": { "type": "number" },
+        "taxAmount": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["cod", "online"] },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid", "failed"] },
+        "orderStatus": { "type": "string", "enum": ["Pending", "Confirmed", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled", "Returned"] },
+        "trackingNumber": { "type": "string", "maxLength": 100 },
+        "courierName": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["customerId", "customerEmail", "items", "totalAmount", "orderStatus", "paymentMethod"]
+    },
+    "Cart": {
+      "title": "Cart",
+      "description": "User shopping cart state",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "items": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "items"]
+    },
+    "Wishlist": {
+      "title": "Wishlist",
+      "description": "User saved wishlist items",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "productIds": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "productIds"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Product rating and review",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string", "maxLength": 128 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 200 },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "maxLength": 2000 },
+        "verifiedPurchase": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "customerId", "rating", "comment"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount coupon code",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "maxLength": 50 },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "discountValue": { "type": "number" },
+        "minOrderValue": { "type": "number" },
+        "expiryDate": { "type": "string", "maxLength": 50 },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "discountType", "discountValue", "isActive"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Store settings and configurations",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string", "maxLength": 200 },
+        "operatorName": { "type": "string", "maxLength": 100 },
+        "address": { "type": "string", "maxLength": 300 },
+        "contactEmail": { "type": "string", "maxLength": 100 },
+        "contactPhone": { "type": "string", "maxLength": 30 },
+        "whatsappNumber": { "type": "string", "maxLength": 30 },
+        "currency": { "type": "string", "maxLength": 10 },
+        "shippingFee": { "type": "number" },
+        "freeShippingThreshold": { "type": "number" },
+        "freeShippingEnabled": { "type": "boolean" },
+        "minOrderValue": { "type": "number" },
+        "taxRate": { "type": "number" },
+        "announcement": { "type": "string", "maxLength": 500 },
+        "returnPolicyDays": { "type": "number" },
+        "returnPolicyText": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrator user entry",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 200 },
+        "role": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "All e-commerce products"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Orders placed by customers"
+    },
+    "/carts/{userId}": {
+      "schema": { "$ref": "#/entities/Cart" },
+      "description": "Customer shopping cart"
+    },
+    "/wishlists/{userId}": {
+      "schema": { "$ref": "#/entities/Wishlist" },
+      "description": "Customer wishlist"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Customer reviews and ratings"
+    },
+    "/coupons/{couponId}": {
+      "schema": { "$ref": "#/entities/Coupon" },
+      "description": "Store discount coupons"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/Setting" },
+      "description": "Store site configuration"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Authorized store administrators"
+    }
+  }
+}
